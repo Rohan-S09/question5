@@ -1,11 +1,13 @@
 pipeline {
-    agent { label 'windows' }
+    agent any
+ 
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/Rohan-S09/question5'
+                checkout scm
             }
         }
+ 
         stage('Parallel Checks') {
             parallel {
                 stage('Unit Check') {
@@ -20,18 +22,20 @@ pipeline {
                 }
             }
         }
+ 
         stage('Summary') {
             steps {
-                echo 'All checks completed.'
+                echo 'Summary: unit_check and integration_check both completed.'
             }
         }
     }
+ 
     post {
         success {
-            echo 'PIPELINE SUCCESS: all checks passed.'
+            echo 'SUCCESS: All checks passed.'
         }
         failure {
-            echo 'PIPELINE FAILED: one or more checks did not pass.'
+            echo 'FAILURE: A check failed. Pipeline stopped.'
         }
     }
 }
